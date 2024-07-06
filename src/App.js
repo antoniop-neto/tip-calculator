@@ -1,55 +1,69 @@
 import { useState } from "react";
 
 export default function App() {
-  const [billInput, setBillInput] = useState(0);
+  return (
+    <div>
+      <TipCalculator />
+    </div>
+  );
+}
+
+function TipCalculator() {
+  const [bill, setBill] = useState("");
   const [yourTip, setYourTip] = useState(0);
   const [friendTip, setFriendTip] = useState(0);
 
-  const averageTip = (yourTip + friendTip) / 2;
+  const averageTip = bill * ((yourTip + friendTip) / 2 / 100);
 
   function handleReset() {
-    setBillInput(0);
+    setBill("");
     setYourTip(0);
     setFriendTip(0);
   }
 
   return (
-    <div>
-      <BillInput input={billInput} onBillInput={setBillInput} />
-      <SelectTip tip={yourTip} onTip={setYourTip}>
+    <div className="tip-calculator">
+      <BillInput bill={bill} onSetBill={setBill} />
+      <SelectTip tip={yourTip} onSelect={setYourTip}>
         How did you like the service?
       </SelectTip>
-      <SelectTip tip={friendTip} onTip={setFriendTip}>
+      <SelectTip tip={friendTip} onSelect={setFriendTip}>
         How did your friend like the service?
       </SelectTip>
-      <DisplayText
-        input={billInput}
-        selected={yourTip}
-        averageTip={averageTip}
-      />
-      <Reset onReset={handleReset} />
+      {bill > 0 && (
+        <>
+          <DisplayText bill={bill} selected={yourTip} averageTip={averageTip} />
+          <Reset onReset={handleReset} />
+        </>
+      )}
     </div>
   );
 }
 
-function BillInput({ input, onBillInput }) {
+function BillInput({ bill, onSetBill }) {
   return (
     <form>
-      <h3>How much was the bill?</h3>
+      <label>How much was the bill?</label>
       <input
+        placeholder="Bill value"
+        className="form"
         type="text"
-        value={input}
-        onChange={(e) => onBillInput(Number(e.target.value))}
+        value={bill}
+        onChange={(e) => onSetBill(Number(e.target.value))}
       ></input>
     </form>
   );
 }
 
-function SelectTip({ tip, onTip, children }) {
+function SelectTip({ tip, onSelect, children }) {
   return (
     <form>
-      <h3>{children}</h3>
-      <select value={tip} onChange={(e) => onTip(Number(e.target.value))}>
+      <label>{children}</label>
+      <select
+        className="form"
+        value={tip}
+        onChange={(e) => onSelect(Number(e.target.value))}
+      >
         <option value={0}>Dissatisfied (0%)</option>
         <option value={5}>It was okay (5%)</option>
         <option value={10}>It was good (10%)</option>
@@ -59,15 +73,18 @@ function SelectTip({ tip, onTip, children }) {
   );
 }
 
-function DisplayText({ input, averageTip }) {
-  const totalTip = (input * averageTip) / 100;
+function DisplayText({ bill, averageTip }) {
   return (
-    <h1>
-      You pay ${input + totalTip} (${input} + ${totalTip} tip)
-    </h1>
+    <h3>
+      You pay ${bill + averageTip} (${bill} + ${averageTip} tip)
+    </h3>
   );
 }
 
 function Reset({ onReset }) {
-  return <button onClick={onReset}>Reset</button>;
+  return (
+    <button className="btn" onClick={onReset}>
+      Reset
+    </button>
+  );
 }

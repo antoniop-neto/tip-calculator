@@ -1,7 +1,13 @@
-.bill {
-  display: flex;
+.tip-calculator {
+  font-size: 30px;
 }
 
-.percentage {
-  display: flex;
+.btn {
+  font-size: 30px;
+}
+
+.form {
+  font-size: 30px;
+  margin: 8px;
+  margin-left: 16px;
 }
